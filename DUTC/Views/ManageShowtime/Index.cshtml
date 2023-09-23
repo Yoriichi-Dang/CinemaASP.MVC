@@ -1,0 +1,319 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DUTC.Models.DTO.ShowtimeListVm
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["title"] = "Showtime List";
+}
+<div class="container-fluid">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update Showtime</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="myForm">
+                        <div class="mb-3">
+                            <input type="hidden" id="inputShowtimeID" value=""/>
+                            <label for="exampleInputEmail1" class="form-label">Movie Title</label>
+                            <input type="text" id="inputMovieName" class="form-control" placeholder="Enter New Movie Name" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">RoomID</label>
+                            <input type="text" id="inputRoomID" class="form-control" placeholder="Enter New RoomID" />
+                        </div>
+                         <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">DateTime</label>
+                            <input type="datetime-local" id="inputDatetime" class="form-control" placeholder="Enter DateTime movie start play" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnUpdate">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  Row 1 -->
+    <div class="row">
+        <div class="col-lg-12 d-flex align-items-stretch">
+            <div class="card w-100">
+                <div class="card-body p-4">
+                    <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
+                        <div class="mb-3 mb-sm-0">
+                            <h5 class="card-title fw-semibold"> @ViewData["title"]</h5>
+                        </div>
+                        <div>
+                            <form asp-action="Index" asp-controller="ManageShowtime">
+                            <div class="input-group">
+                                <input type="hidden" name="type" value="@Model.type"/>
+                                <input asp-for="search" type="datetime-local" id="inputSearchDate" class="form-control" placeholder="dd-mm-yyyy" value="@Model.search" min="2023-01-01" max="2023-12-31">
+                                <button type="submit" id="btnDate" class="btn btn-outline-primary">OK</button>
+                            </div>
+                            </form>
+                            <select class="form-select" id="myselectShowtime" aria-label="Default select example">
+                                <option value="1">All</option>
+                                <option value="2">Have Playing</option>
+                                <option value="3">Have Not Playing</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table text-nowrap mb-0 align-middle" id="myTable">
+                            <thead class="text-dark fs-4">
+                                <tr>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0">ID</h6>
+                                    </th>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0"><a href="/ManageShowtime/Index?term=@Model.Term&currentPage=@Model.CurrentPage&sortOrder=@ViewData["TitleOrder"]&search=@Model.search&type=@Model.type" style="color:black;">Title</a></h6>
+                                    </th>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0"><a href="/ManageShowtime/Index?term=@Model.Term&currentPage=@Model.CurrentPage&sortOrder=@ViewData["RoomOrder"]&search=@Model.search&type=@Model.type" style="color:black;">Room</a></h6>
+                                    </th>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0"><a href="/ManageShowtime/Index?term=@Model.Term&currentPage=@Model.CurrentPage&sortOrder=@ViewData["DatetimeOrder"]&search=@Model.search&type=@Model.type" style="color:black;">Date</a></h6>
+                                    </th>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0">Time</h6>
+                                    </th>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0">Action</h6>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    var count = 1;
+                                }
+                                @foreach (var item in Model.ShowtimeList)
+                                {
+                                    string formatteDate = item.Time.Date.ToString("dd/MM/yyyy");
+                                    string formatteTime = item.Time.TimeOfDay.ToString("hh\\:mm");
+                                        <tr>
+                                        @*<td class="border-bottom-0">
+                                    <h6 class="fw-semibold mb-0">@(count++)</h6>
+                                    </td>*@
+                                            <td class="border-bottom-0">
+                                                <h6 class="fw-semibold mb-0 fs-4" value="@item.ID">@(count++)</h6>
+                                            </td>
+                                            <td class="border-bottom-0">
+                                            <h6 class="fw-semibold mb-0 fs-4"><a href="/ManageShowtime/ViewShowtime?id=@item.MovieID" style="color:black;">@item.Title</a></h6>
+                                            </td>
+                                            <td class="border-bottom-0">
+                                                <h6 class="fw-semibold mb-0 fs-4">@item.RoomID</h6>
+                                            </td>
+                                            <td class="border-bottom-0">
+                                                <h6 class="fw-semibold mb-0 fs-4">@formatteDate</h6>
+                                            </td>
+                                            <td class="border-bottom-0">
+                                                <h6 class="fw-semibold mb-0 fs-4">@formatteTime</h6>
+                                            </td>
+                                        <td class="border-bottom-0">
+                                                <a class="btn btn-success m-1" href="/Home/Room?id=@item.ID">View</a>
+                                                @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@item.ID">Edit</button>*@
+                                                <a class="btn btn-danger m-1" href="/ManageShowtime/Delete?id=@item.ID">Delete</a>
+                                            </td>
+                                        </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <nav aria-label="...">
+                            <ul class="pagination justify-content-end">
+                                @if (Model.CurrentPage > 1)
+                                {
+                                        <li class="page-item">
+                                        <a class="page-link" href="/ManageShowtime/Index?currentPage=@(Model.CurrentPage-1)&term=@Model.Term&sortOrder=@Model.sortOrder&search=@Model.search&type=@Model.type">Previous</a>
+                                        </li>
+                                }
+                                else
+                                {
+                                        <li class="page-item">
+                                        <span class="page-link">Previous<a href="/ManageShowtime/Index?currentPage=@(Model.CurrentPage-1)&term=@Model.Term&sortOrder=@Model.sortOrder&search=@Model.search&type=@Model.type"></a></span>
+                                        </li>
+                                }
+                                @for (int i = 1; i <= Model.TotalPages; i++)
+                                {
+                                    if (Model.CurrentPage == i)
+                                    {
+                                                <li class="page-item active" aria-current="page">
+                                            <span class="page-link">@i<a href="/ManageShowtime/Index?currentPage=@i&term=@Model.Term&sortOrder=@Model.sortOrder&search=@Model.search&type=@Model.type"></a></span>
+                                                </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="page-item"><a class="page-link" href="/ManageShowtime/Index?currentPage=@i&term=@Model.Term&sortOrder=@Model.sortOrder&search=@Model.search&type=@Model.type">@i</a></li>
+                                    }
+
+                                }
+                                @if (Model.CurrentPage + 1 <= Model.TotalPages)
+                                {
+                                        <li class="page-item">
+                                        <a class="page-link" href="/ManageShowtime/Index?currentPage=@(Model.CurrentPage+1)&term=@Model.Term&sortOrder=@Model.sortOrder&search=@Model.search&type=@Model.type">Next</a>
+                                        </li>
+                                }
+                                else
+                                {
+                                        <li class="page-item">
+                                            <span class="page-link">Next<a href="#"></a></span>
+                                        </li>
+                                }
+
+                            </ul>
+                        </nav>
+                       @* @if (TempData["msg"] != null)
+                        {
+                            @if (TempData["msg"].ToString().StartsWith("success"))
+                            {
+                                        <div class="alert alert-success" role="alert">
+                                            Delete Successfully!
+                                        </div>
+                            }
+                            else
+                            {
+                                        <div class="alert alert-danger" role="alert">
+                                            Error Delete
+                                        </div>
+                            }
+                        }*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section SearchShowtime{
+        <form asp-controller="ManageShowtime" asp-action="Index">
+            <div class="input-group">
+                <input name="term" value="@Model.Term" type="search" class="form-control rounded" placeholder="Search..." aria-label="Search" aria-describedby="search-addon" />
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+            </div>
+        </form>
+    }
+@section Scripts{
+        <script>
+            $(document).ready(function () {
+                function getTableDataById(id) {
+                    var table = document.getElementById('myTable'); // Lấy tham chiếu đến bảng
+                    var objects = []; // Mảng chứa các đối tượng
+
+                    for (var i = 1; i < table.rows.length; i++) {
+                        var row = table.rows[i]; // Lấy tham chiếu đến từng dòng
+                        var h6 = row.cells[0].querySelector("h6"); // Lấy tham chiếu đến phần tử <h6>
+
+                        // Lấy giá trị từ thuộc tính "value" của phần tử <h6>
+                        var Id = h6.getAttribute("value");
+                        if(Id===id){
+                            var title = row.cells[1].querySelector("h6").textContent;;
+                            var roomID = row.cells[2].querySelector("h6").textContent;
+                            var date = row.cells[3].querySelector("h6").textContent;
+                            var time = row.cells[4].querySelector("h6").textContent;
+                            // Tạo đối tượng và thêm vào mảng
+                            var obj = {
+                                ID:id,
+                                Title:title,
+                                roomID:roomID,
+                                Date:date,
+                                Time:time
+                            };
+                            return obj
+                        }
+                    }
+
+                    return null; // Trả về mảng các đối tượng
+                }
+                //add function
+                var exampleModal = document.getElementById('exampleModal')
+                exampleModal.addEventListener('show.bs.modal', function (event) {
+                    // Button that triggered the modal
+                    var button = event.relatedTarget
+                    // Extract info from data-bs-* attributes
+                    var recipient = button.getAttribute('data-bs-whatever')
+                    // If necessary, you could initiate an AJAX request here
+                    // and then do the updating in a callback.
+                    //
+                    // Update the modal's content.
+                    var modalTitle = exampleModal.querySelector('.modal-title')
+                    var modalBodyInput = exampleModal.querySelector('.modal-body input')
+                    var inputShowtime = document.getElementById("inputShowtimeID");
+                    if (inputShowtime) {
+                        inputShowtime.value = recipient; // Thiết lập giá trị mới cho phần tử input
+                    }
+                    var model=getTableDataById(recipient)
+                    modalTitle.textContent = 'Update Showtime ID:' + recipient
+
+
+                    modalBodyInput.value = recipient
+                    var inputMovieName = document.getElementById('inputMovieName');
+                    inputMovieName.value = model.Title
+                    var inputRoomid = document.getElementById('inputRoomID');
+                    inputRoomid.value=model.roomID
+                    //date
+                });
+                //start
+                });
+                $('#btnUpdate').click(function () {
+                    if (Validate()) {
+                        var obj = {
+                            ID: $('#inputShowtimeID').val(),
+                            Title: $('#inputMovieName').val(),
+                            RoomID: $('#inputRoomID').val(),
+                            Time: $('#inputDatetime').val()
+                        };
+                        $.ajax({
+                            url: '/ManageShowtime/Edit',
+                            type: 'POST',
+                            data: obj,
+                            success: function (res) {
+                                if (res.success) {
+                                    window.location.reload();
+                                    // Hiển thị thông báo sau khi thành công
+                                    alert("Successfully Update Showtime");
+                                } else {
+                                    alert("Can't Update Showtime");
+                                }
+                            }
+                        });
+                    } else {
+                        alert("Please fill in all required fields.");
+                    }
+                });
+
+                function Validate() {
+                    var movieName = $('#inputMovieName').val();
+                    var roomID = $('#inputRoomID').val();
+                    var time = $('#inputDatetime').val();
+                    if (roomID === '' || time === ''||movieName==='') {
+                        return false;
+                    }
+                    else return true;
+                }
+        
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                var selectedElement = document.getElementById('myselectShowtime');
+                var type='@Model.type';
+                console.log(type);
+                if (type === '' || type === 'all') {
+                    selectedElement.selectedIndex = 0; // Select the "All" option (index 0)
+                } else if (type === 'have playing') {
+                    selectedElement.selectedIndex = 1; // Select the "Playing" option (index 1)
+                } else {
+                    selectedElement.selectedIndex = 2; // Select the "Upcoming" option (index 2)
+                }
+
+                selectedElement.onchange = function () {
+                    var selectedOption = selectedElement.options[selectedElement.selectedIndex];
+                    var selectedText = selectedOption.text;
+                    console.log(selectedText);
+                    window.location.href = "/ManageShowtime/Index?search=@Model.search&type=" + selectedText;
+                };
+            });
+        </script>
+}

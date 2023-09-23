@@ -1,0 +1,45 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DUTC.Models.DTO.Genre
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["title"] = "Add Genre";
+}
+    <!--  Header End -->
+    <div class="container-fluid">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-body">
+                <h5 class="card-title fw-semibold mb-4">@ViewData["title"]</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" asp-action="Add" asp-controller="ManageGenre">
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Genre Name</label>
+                                    <input type="text" class="form-control" asp-for="GenreName" />
+                                    <div class="form-text">Enter Genre Name</div>
+                                </div>
+                                @if (TempData["msg"] != null)
+                                {
+                                    @if (TempData["msg"].ToString().StartsWith("Error"))
+                                    {
+                                        <div class="alert alert-danger" role="alert">
+                                            @TempData["msg"]
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-success" role="alert">
+                                            @TempData["msg"]
+                                        </div>
+                                    }
+                                }
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

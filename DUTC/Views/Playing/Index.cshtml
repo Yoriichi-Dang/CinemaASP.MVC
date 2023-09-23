@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Playing Movie";
+}
+<div class="blog">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="titlepage text_align_center ">
+                    <h2>List Movie</h2>
+                    <p>All Movie are playing at DUTC Cinema</p>
+                </div>
+            </div>
+        </div>
+        @{
+            DateTime currentDate = DateTime.Now;
+            int result;
+        }
+        <div class="row d_flex">
+            @foreach (var item in Model.MovieList)
+            {
+                {
+                    DateTime date1 = DateTime.Parse(item.DateReleased);
+                    result = DateTime.Compare(date1, currentDate);
+                }
+                @if (result <= 0)
+                {
+                    <div class=" col-md-4">
+                        <div class="latest">
+                            <figure><img src="/Uploads/@item.ImagePosterMovie" /></figure>
+                            <!-- <span>16 March</span> -->
+                            <div class="nostrud">
+                                <h3>@item.Title</h3>
+                                <p>Genre: @item.GenreNames<br>Time watch: @(item.TimeWatch)ph<br>Rate: @item.RateMovie<i class="fa fa-star" aria-hidden="true"></i></p>
+                                <a class="read_more" href="/Home/MovieDetails?id=@item.Id">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+

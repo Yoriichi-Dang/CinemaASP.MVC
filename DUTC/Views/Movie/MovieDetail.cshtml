@@ -1,0 +1,228 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DUTC.Models.DTO.Movie
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["title"] = "Movie Detail";
+}
+<!--  Header End -->
+<div class="container-fluid">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Showtime</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="myForm">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">RoomID</label>
+                            <input type="text" id="inputRoomID" class="form-control" placeholder="Enter RoomID" />
+                            <input type="hidden" class="form-control" id="inputMovieID" value="@Model.Id" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">DateTime</label>
+                            <input type="datetime-local" id="inputDatetime" class="form-control" placeholder="Enter DateTime Movie Start Playing" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnAdd">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="popup-video">
+            <span>&times;</span>
+            <video src="/Uploads/@Model.VideoPosterMovie" muted autoplay controls onended="videoEnded()"> </video>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5 class="card-title fw-semibold mb-4">Movie</h5>
+                        <div class="card">
+                            <img src="/Uploads/@Model.ImagePosterMovie" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.Title</h5>
+                                <a href="#" id="play-video-link" class="btn btn-primary">Watch Trailer</a>
+                            </div>
+                        </div>
+                        <div class="datetime">
+                            <div class="date">
+                                <span id="dayname">Day</span>,
+                                <span id="month">Month</span>
+                                <span id="daynum">00</span>,
+                                <span id="year">Year</span>
+                            </div>
+                            <div class="time">
+                                <span id="hour">00</span>:
+                                <span id="minutes">00</span>:
+                                <span id="seconds">00</span>
+                                <span id="period">AM</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <h5 class="card-title fw-semibold mb-4">Information</h5>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">@Model.Title</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Time: <strong>@(Model.TimeWatch)ph</strong></h6>
+                                <h6 class="card-subtitle mb-2 text-muted">Genre : <strong>@Model.GenreNames</strong></h6>
+                                <p class="card-text">
+                                    Content : <strong>
+                                        @Model.Content
+                                    </strong>
+                                </p>
+                                <!-- <a href="#" class="card-link">Card link</a>
+                                <a href="#" class="card-link">Another link</a> -->
+                                <h6 class="card-subtitle mb-2 text-muted">Date Released: <strong>@Model.DateReleased</strong></h6>
+                                <h6 class="card-subtitle mb-2 text-muted">Date End: <strong>@Model.DateEnd</strong></h6>
+                                <p class="card-text">Cast : <strong>@Model.Cast</strong><br>Director: <strong>@Model.Director</strong><br>Nation: <strong>@Model.Nation</strong></p>
+                                <!-- <button type="button" class="btn btn-warning m-1">Evaluate</button> -->
+                                <h6 class="card-subtitle mb-2 text-muted">Viewer: <strong>@Model.Viewer</strong></h6>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    Rate:
+                                    <Strong>@Model.RateMovie</Strong>
+                                    <i class="fa fa-star" style="font-size: 19px;color:#fac917;"></i>
+                                </h6>
+                                <a class="btn btn-outline-secondary m-1" href="/Movie/Edit?id=@Model.Id">Edit Movie</a>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h5 class="card-title fw-semibold mb-4">Show Time</h5>
+                            <div class="input-group">
+                                <input name="date" id="inputdateSearch" type="date" class="form-control" placeholder="dd-mm-yyyy" value="" min="2023-01-01" max="2024-12-31">
+                                <button type="submit" id="btnsearchDate" class="btn btn-outline-primary">OK</button>
+                            </div>
+                            <div class="card" id="showtimeMovie">
+                                <div class="card-header">
+                                </div>
+                               @* @if(Model.ListShowtimes!=null){
+                                    var groupedObjects = Model.ListShowtimes.AsQueryable().GroupBy(a=>a.Time.Date)
+                                    .Select(g => new
+                                    {
+                                        Date = g.Key.ToString("dd/MM/yyyy"),
+                                        Times = g.Select(dt => new { Time = dt.Time.TimeOfDay.ToString("hh\\:mm"), Id = dt.ID, RoomID = dt.RoomID }).ToList()
+                                    });
+                                    @foreach (var group in groupedObjects)
+                                    {
+                                        <h6 class="card-subtitle mb-2 text-muted"><strong>@group.Date</strong></h6>
+                                        <ul style="display:flex;flex-wrap:wrap;">
+                                            @foreach (var time in group.Times)
+
+                                            {
+                                                <li><a href="/Home/Room?id=@time.Id" value="@time.Id" class="btn btn-outline-dark m-1">@time.Time</a></li>
+                                            }
+                                        </ul>
+                                    }
+                                }*@
+                            </div>
+                            @if (TempData["msg"] != null)
+                            {
+                                @if (TempData["msg"].ToString().StartsWith("Success"))
+                                {
+                                    <div class="alert alert-success" role="alert">
+                                        @TempData["msg"]
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-danger" role="alert">
+                                        @TempData["msg"]
+                                    </div>
+                                }
+                            }
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" class="btn btn-outline-success m-1" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="New Showtime">Add</button>
+                                <a class="btn btn-outline-warning m-1" href="/Movie/CopyShowtime?id=@Model.Id">Copy</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            //start
+            LoadShowtimeMovie();
+            $('#btnAdd').click(function () {
+                var movieID = $('#inputMovieID').val();
+                var roomID = $('#inputRoomID').val();
+                var time=$('#inputDatetime').val();
+                if (Validate()) {
+                    var obj = {
+                        MovieID: movieID,
+                        RoomID: roomID,
+                        Time: time
+                    };
+                    $.ajax({
+                        url: '/Movie/AddShowtime',
+                        type: 'POST',
+                        data: obj,  // Chỉnh sửa để truyền dữ liệu theo định dạng key-value
+                        success: function (res) {
+                            if (res.success) {
+                                window.location.reload();
+                                alert("Successfully Add New Showtime");
+                            }
+                            else{
+                                alert("Can't Add New Showtime");
+                            }
+                        }
+                    });
+                }
+                //end
+            });
+
+            var searchShowtimeMovie = document.getElementById('btnsearchDate');
+            searchShowtimeMovie.addEventListener("click", () => {
+                var datetime = $('#inputdateSearch').val();
+                $('#showtimeMovie ul').remove();
+                $('#showtimeMovie h6').remove();
+                LoadShowtimeMovie(datetime);
+            });
+            function LoadShowtimeMovie(Term) {
+                $.ajax({
+                    url: '/Home/GetShowtimeMovie',
+                    type: 'GET',
+                    data: { term: Term,
+                        id:'@Model.Id'
+                    },
+                    success: function (res){
+                        if (res.success) {
+                            $.each(res.data.list, function (index, item) {
+                                console.log(item);
+                                let tr = '<h6 class="card-subtitle mb-2 text-muted"><strong>' + item.date + '</strong></h6>';
+                                tr += '<ul style="display:flex;flex-wrap:wrap;">';
+                                $.each(item.time, function (index1, v) {
+                                    tr += '<li><a href="/Home/Room?id=' + v.item1 + ' "value=' + v.item1 + ' class="btn btn-outline-dark m-1">' + v.item2 + '</a></li>';
+                                });
+                                tr += '</ul>';
+                                $('#showtimeMovie').append(tr);
+                            });
+
+                        }
+                    }
+                });
+            }
+            function Validate() {
+                var roomID = $('#inputRoomID').val();
+                var time = $('#inputDatetime').val();
+                if (roomID === ''||time==='') {
+                    return false;
+                }
+                else return true;
+            }
+        });
+    </script>
+
+    }
+

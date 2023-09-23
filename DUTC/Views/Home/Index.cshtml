@@ -1,0 +1,387 @@
+﻿@using System.Globalization;
+@model DUTC.Models.DTO.IndexClass
+@{
+    ViewData["Title"] = "DUTC Home";
+    Layout = "_Layout";
+}
+
+<div class="blog">
+    <div class="popup-video">
+        <span>&times;</span>
+        <video src="..." muted autoplay controls onended="videoEnded()"> </video>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="titlepage text_align_center ">
+                    <h2>Top Playing</h2>
+                    <p>Top Movie are playing at DUTC Cinema now !</p>
+                </div>
+            </div>
+        </div>
+        @{
+            DateTime currentDate = DateTime.Now;
+            int result;
+        }
+        <div class="row d_flex">
+            @foreach(var item in Model.MovieListVm.MovieList)
+            {
+                {
+                    DateTime date1 = DateTime.Parse(item.DateReleased);
+                    result = DateTime.Compare(date1, currentDate);
+                }
+                @if (result < 0)
+                {
+                    <div class=" col-md-4">
+                        <div class="latest">
+                            <figure><img src="/Uploads/@item.ImagePosterMovie" /></figure>
+                            <!-- <span>16 March</span> -->
+                            <div class="nostrud">
+                                <h3>@item.Title</h3>
+                                <p>Genre: @item.GenreNames<br>Time watch: @(item.TimeWatch)ph<br>Rate: @item.RateMovie<i class="fa fa-star" aria-hidden="true"></i></p>
+                                <a class="read_more" href="/Home/MovieDetails?id=@item.Id">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<!-- services -->
+<!-- end services -->
+<!-- priceing -->
+<div class="priceing">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="titlepage text_align_center">
+                    <h2>Our Promotion</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="our_priceing text_align_center">
+                            <div class="our_pri">
+                                <h3>Discount</h3>
+                                <span><strong>45</strong>$</span>
+                                <p><br>Every Monday to Wednesday<br>movie tickets</p>
+                            </div>
+                            @*<a class="read_more" href="javascript:void(0)">Read More</a>*@
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="our_priceing text_align_center">
+                            <div class="our_pri">
+                                <h3>Discount</h3>
+                                <span><strong>-5%</strong></span>
+                                <p><br>Discount tickets for regular customers member<br> at DUTC Cinema<br></p>
+                            </div>
+                            @*<a class="read_more" href="javascript:void(0)">Read More</a>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end priceing -->
+<!-- blog -->
+<div class="blog">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="titlepage text_align_center ">
+                    <h2>Blog Movie</h2>
+                    <p>Show Blog audience reviews about the movie after watching</p>
+                </div>
+            </div>
+        </div>
+        <div class="row d_flex">
+            @{
+                var count = 1;
+            }
+            @foreach (var item in Model.MovieListVm.MovieList.OrderByDescending(a=>a.RateMovie))
+            {
+                {
+                    DateTime date1 = DateTime.Parse(item.DateReleased);
+                    result = DateTime.Compare(date1, currentDate);
+                    DateTime date = DateTime.ParseExact(item.DateReleased, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    item.DateReleased = date.ToString("dd/MM/yyyy");
+                }
+                @if (result < 0&&count<4)
+                {
+                    <div class=" col-md-4">
+                        <div class="latest">
+                            <figure><img src="/Uploads/@item.ImagePosterMovie" alt="#" /></figure>
+                            <span class="yellow">@item.DateReleased</span>
+                            <div class="nostrud">
+                                <h3>@item.Title</h3>
+                                <p>Rate: @item.RateMovie <i class="fa fa-star" aria-hidden="true"></i><br>Content Blog: @item.ContentReview</p>
+                                <a class="read_more" href="/Home/MovieDetails?id=@item.Id">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                    count++;
+                }
+            }
+        </div>
+    </div>
+</div>
+<!-- end blog -->
+<!-- about -->
+<div class="about">
+    <div class="container_width">
+        <div class="row d_flex grig">
+            <div class="col-md-6">
+                <div class="about_img">
+                    <figure>
+                        <img src="https://entrepreneurship.babson.edu/wp-content/uploads/2020/10/Movie-1200-630.jpg" alt="#" />
+                    </figure>
+                </div>
+            </div>
+            <div class="col-md-6 order">
+                <div class="titlepage text_align_left">
+                    <h2>About Our Center</h2>
+                    <p>
+                        At DUTC Cinema, we strive to provide an exceptional movie experience that goes beyond expectations. Whether you are a film enthusiast, a casual viewer, or looking for a fun outing with friends and family, our cinema promises to deliver the perfect blend of comfort, technology, and entertainment.
+                    </p>
+                    <a class="read_more" href="/Home/Service">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end about -->
+<!-- customers -->
+<div class="customers">
+    <div class="clients_bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="titlepage text_align_center">
+                        <h2>What is Says Customers</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- start slider section -->
+    <div id="myCarousel" class="carousel slide clients_banner" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner" id="reviewServiceCarousel">
+            @*content*@
+        </div>
+        <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+            <i class="fa fa-angle-left" aria-hidden="true"></i>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+            <i class="fa fa-angle-right" aria-hidden="true"></i>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+@*@section modalMovie{
+    @{
+        DateTime currentDate = DateTime.Now;
+    }
+    @foreach(var item in Model.MovieListVm.MovieList.OrderByDescending(a=>a.Viewer))
+    {
+        DateTime dateReleased=DateTime.ParseExact(item.DateReleased,"dd/MM/yyyy",CultureInfo.InvariantCulture);
+        if (DateTime.Compare(dateReleased, currentDate) < 0)
+        {
+            <li><a class="dropdown-item" href="#">@item.Title</a></li>
+        }
+    }
+
+}*@
+<!--  footer -->
+@section slider_main{
+    <div class="modal fade" id="exampleModalContact" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Contact with DUT Cinema</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Phone Number:</label>
+                            <input type="text" class="form-control" id="recipient-name" value="0941295687" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Email:</label>
+                            <input type="text" class="form-control" id="recipient-name" value="DUTC@gmail.com" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Address:</label>
+                            <input type="text" class="form-control" id="recipient-name" value="58 Nguyen Luong Bang, Lien Chieu, Danang city" readonly>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slider_main">
+        <!-- carousel code -->
+        <div id="banner1" class="carousel slide">
+            <ol class="carousel-indicators">
+                <li data-target="#banner1" data-slide-to="0" class="active"></li>
+                <li data-target="#banner1" data-slide-to="1"></li>
+                <li data-target="#banner1" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <!-- first slide -->
+                <div class="carousel-item active">
+                    <div class="container">
+                        <div class="carousel-caption relative">
+                            <div class="row d_flex">
+                                <div class="col-md-5">
+                                    <div class="creative">
+                                        <h1>DUTC <br>Cinema </h1>
+                                        <p>Best Cinema in Danang city</p>
+                                        <button type="button" class="read_more" data-toggle="modal" data-target="#exampleModalContact">Contact us</button>
+                                      @*  <a class="read_more" href="Javascript:void(0)">Contact us</a>*@
+                                        <a class="read_more" href="/Home/Service">Read More</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="row mar_right">
+                                        <div class="col-md-6">
+                                            <div class="agency">
+                                                <figure><img src="https://dut.udn.vn/Files/admin/images/Tin_tuc/Khac/2020/LogoDUT/image002.jpg" alt="#" /></figure>
+                                               @* <div class="play_icon">
+                                                    <a class="play-btn" href="javascript:void(0)"><img src="images/play_icon.png"></a>
+                                                </div>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @{
+                    int count = 0;
+                    decimal movieCount = Convert.ToDecimal(Model.MovieListVm.MovieList.Count());
+                    int halfCount = Convert.ToInt32(Math.Round(movieCount / 2, 0, MidpointRounding.AwayFromZero));
+              }
+                <!-- second slide -->
+                @for (int i = 0; i <halfCount; i++)
+                {
+                    <div class="carousel-item">
+                        <div class="container">
+                            <div class="carousel-caption relative">
+                                <div class="row d_flex">
+                                    <div class="col-md-5">
+                                        <div class="creative">
+                                            <h1>DUTC <br>Cinema </h1>
+                                            <p>Best Cinema in Danang city</p>
+                                            <button type="button" class="read_more" data-toggle="modal" data-target="#exampleModalContact">Contact us</button>
+                                            <a class="read_more" href="/Home/Service">Read More</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="row mar_right">
+                                            @for (int j = 0; j < 2; j++)
+                                            {
+                                                @if (count < Model.MovieListVm.MovieList.Count())
+                                                {
+                                                    <div class="col-md-6">
+                                                        <div class="agency">
+                                                            <figure><img src="/Uploads/@Model.MovieListVm.MovieList.ElementAt(count).ImagePosterMovie" alt="#" /></figure>
+                                                            <div class="play_icon">
+                                                                <a class="play-btn" href="javascript:void(0)" data-video-src="/Uploads/@Model.MovieListVm.MovieList.ElementAt(count++).VideoPosterMovie"><img src="images/play_icon.png"></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <!-- controls -->
+            <a class="carousel-control-prev" href="#banner1" role="button" data-slide="prev">
+                <i class="fa fa-angle-left" aria-hidden="true"></i>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#banner1" role="button" data-slide="next">
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+}
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            LoadReviewService();
+        });
+        function LoadReviewService(){
+            $('#reviewServiceCarousel').empty();
+                $.ajax({
+                url: '/Home/GetReviewService',
+                type: 'GET',
+                success: function (res) {
+                        if (res.success) {
+                            console.log(res.result);
+                            for(let i=0;i<res.result.length;i++){
+                                let tr='';
+                                if(i===0){
+                                tr += ' <div class="carousel-item active"> <div class="container"><div class="carousel-caption relative">   <div class="row d_flex">  <div class="col-md-2 col-sm-8"> <div class="pro_file">';
+                                }
+                                else{
+                                tr += ' <div class="carousel-item"> <div class="container"><div class="carousel-caption relative">   <div class="row d_flex">  <div class="col-md-2 col-sm-8"> <div class="pro_file">';
+                                }
+                            tr += ' <i><img src="/Uploads/' + res.result[i].imageProfile + '" alt="#" /></i>';
+                            tr += '<h4>' + res.result[i].name + '</h4><span>Member</span> </div></div>';
+                            tr += ' <div class="col-md-10"><div class="test_box text_align_left"> <p>' + res.result[i].content;
+                            tr += ' </p> </div> </div> </div> </div> </div> </div>';
+                            $('#reviewServiceCarousel').append(tr);
+                           }
+                        }
+                    }
+                });
+        }
+        $('#addReviewService').click(function(e){
+            e.preventDefault();
+            $.ajax({
+                url: '/Home/AddReviewService',
+                type: 'POST',
+                data:{
+                    content: $('#inputReviewService').val()
+                },
+                success: function (res) {
+                    if (res.success) {
+                        alert("Success!");
+                        $('#inputReviewService').val('');
+                        LoadReviewService();
+                    }
+                    else{
+                        alert("Failed add form review!");
+                    }
+                }
+            });
+        });
+    </script>
+}

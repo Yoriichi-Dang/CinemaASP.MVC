@@ -1,0 +1,51 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DUTC.Models.DTO.Genre
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["title"] = "Edit Genre";
+}
+    <!--  Header End -->
+    <div class="container-fluid">
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-body">
+                <h5 class="card-title fw-semibold mb-4">@ViewData["title"]</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" asp-action="Update" asp-controller="ManageGenre">
+                                <input type="hidden" class="form-control" asp-for="Id" value="@Model.Id"/>
+                               @* <div class="mb-3">
+                                    <label class="form-label">Genre Name</label>
+                                    <input type="text" class="form-control" value="@Model.Id" disabled />
+                                    <div class="form-text">Enter Genre Name</div>
+                                </div>*@
+                                <div class="mb-3">
+                                    <label class="form-label">Genre Name</label>
+                                    <input type="text" class="form-control" asp-for="GenreName" value="@Model.GenreName" />
+                                    <div class="form-text">Enter Genre Name</div>
+                                </div>
+                                @if (TempData["msg"] != null)
+                                {
+                                    @if (TempData["msg"].ToString().StartsWith("Error"))
+                                    {
+                                        <div class="alert alert-danger" role="alert">
+                                            @TempData["msg"]
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-success" role="alert">
+                                            @TempData["msg"]
+                                        </div>
+                                    }
+                                }
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

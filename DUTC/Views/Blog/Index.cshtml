@@ -1,0 +1,219 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DUTC.Models.DTO.ReviewListVm
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Blog Movie";
+}
+    @*<div class="container">
+        <div class="carousel-caption relative">
+            <div class="row d_flex">
+                <div class="col-md-2 col-sm-8">
+                    <div class="pr">
+                        <i><img src="/Uploads/@item.ImageMovie" alt="#" /></i>
+                        <h4>@item.UserInfo</h4>
+                        <span>Member</span>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="test_box text_align_left">
+                        <p>
+                            @item.ContentReview
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 course-details-content">
+                <div class="course-details-card mt--40">
+                    <div class="course-content">
+                        <h5 class="mb--20">Movie Review</h5>
+<!-- Example single danger button -->
+<div class="bd-example">
+  <div class="btn-group">
+    <button type="button" class="btn btn-danger dropdown-toggle option" data-bs-toggle="dropdown" aria-expanded="false">Movie</button>
+    <ul class="dropdown-menu option" style="">
+        @foreach(var item in Model.TitleMovie)
+        {
+          <li><a class="dropdown-item" href="/Blog/Index?Title=@item&Rate=@Model.Rate">@item</a></li>
+        }
+         <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/Blog/Index?Title=&Rate=@Model.Rate">All</a>
+    </ul>
+  </div><!-- /btn-group -->
+   <div class="btn-group">
+    <button type="button" class="btn btn-warning dropdown-toggle option" data-bs-toggle="dropdown" aria-expanded="false">Rate</button>
+    <ul class="dropdown-menu option" style="">
+        @for(int i = 10; i >= 0; i--)
+        {
+             <li><a class="dropdown-item" href="/Blog/Index?Title=@Model.Title&Rate=@i">@i  <i class="fa fa-star" aria-hidden="true"></i></a></li>
+        } 
+          <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/Blog/Index?Title=@Model.Title&Rate=">All</a>
+    </ul>
+  </div>
+</div>
+
+
+                        @*<div class="row row--30">
+                            <div class="col-lg-4">
+                                <div class="rating-box">
+                                    <div class="rating-number">5.0</div>
+                                    <div class="rating"> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star" aria-hidden="true"></i> <i class="fa fa-star" aria-hidden="true"></i> </div>
+                                    <span>(25 Review)</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="review-wrapper">
+                                    <div class="single-progress-bar">
+                                        <div class="rating-text"> 5 <i class="fa fa-star" aria-hidden="true"></i> </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="rating-value">23</span>
+                                    </div>
+                                    <div class="single-progress-bar">
+                                        <div class="rating-text"> 4 <i class="fa fa-star" aria-hidden="true"></i> </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="rating-value">3</span>
+                                    </div>
+                                    <div class="single-progress-bar">
+                                        <div class="rating-text"> 3 <i class="fa fa-star" aria-hidden="true"></i> </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="rating-value">2</span>
+                                    </div>
+                                    <div class="single-progress-bar">
+                                        <div class="rating-text"> 2 <i class="fa fa-star" aria-hidden="true"></i> </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="rating-value">3</span>
+                                    </div>
+                                    <div class="single-progress-bar">
+                                        <div class="rating-text"> 1 <i class="fa fa-star" aria-hidden="true"></i> </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="0" aria-valuemin="80" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="rating-value">2</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+                        <div class="comment-wrapper pt--40">
+                            <!--  Comment Box start--->
+                        @foreach(var item in Model.List)
+                        {
+                            DateTime date = (DateTime)item.TimeReview;
+                            <div class="section-title">
+                                <h5 class="mb--25">@(date.Date.ToString("dd/MM/yyyy"))-@(date.TimeOfDay.ToString("hh\\:mm"))</h5>
+                            </div>
+                            <div class="edu-comment">
+                                <div class="thumbnail"> <img src="/Uploads/@item.ImageMovie" alt="Comment Images"> </div>
+                                <div class="comment-content">
+                                    <div class="comment-top">
+                                        <h6 class="title">@item.MovieTitle    (@item.Rate <i class="fa fa-star" aria-hidden="true"></i>)</h6>
+                                    </div>
+                                    <div class="rating">
+                                        @for (int i = 0; i < item.Rate; i++)
+                                        {
+                                            <i class="fa fa-star" aria-hidden="true"></i>
+                                        }
+                                    </div>
+                                    <span class="subtitle">Member Review: @item.UserInfo</span>
+                                    <p>Content: @item.ContentReview</p>
+                                </div>
+                                @*<div class="col col-lg-2">
+                                    <a href="#" class="like-button">
+                                    <?xml version="1.0" encoding="utf-8"?>
+                                    <svg width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M320 1344q0-26-19-45t-45-19q-27 0-45.5 19t-18.5 45q0 27 18.5 45.5t45.5 18.5q26 0 45-18.5t19-45.5zm160-512v640q0 26-19 45t-45 19h-288q-26 0-45-19t-19-45v-640q0-26 19-45t45-19h288q26 0 45 19t19 45zm1184 0q0 86-55 149 15 44 15 76 3 76-43 137 17 56 0 117-15 57-54 94 9 112-49 181-64 76-197 78h-129q-66 0-144-15.5t-121.5-29-120.5-39.5q-123-43-158-44-26-1-45-19.5t-19-44.5v-641q0-25 18-43.5t43-20.5q24-2 76-59t101-121q68-87 101-120 18-18 31-48t17.5-48.5 13.5-60.5q7-39 12.5-61t19.5-52 34-50q19-19 45-19 46 0 82.5 10.5t60 26 40 40.5 24 45 12 50 5 45 .5 39q0 38-9.5 76t-19 60-27.5 56q-3 6-10 18t-11 22-8 24h277q78 0 135 57t57 135z"/></svg>
+                                    </a>
+                                </div>*@
+                            </div>
+                        }
+                            <!--  Comment Box end--->
+                        </div>
+                          <nav aria-label="...">
+                            <ul class="pagination justify-content-end">
+                                @if (Model.CurrentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="/Blog/Index?Title=@Model.Title&Rate=@Model.Rate&currentPage=@(Model.CurrentPage-1)&sortOrder=@Model.sortOrder">Previous</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <span class="page-link">Previous<a href="/Blog/Index?Title=@Model.Title&Rate=@Model.Rate&currentPage=@(Model.CurrentPage-1)&sortOrder=@Model.sortOrder"></a></span>
+                                    </li>
+                                }
+                                @for (int i = 1; i <= Model.TotalPages; i++)
+                                {
+                                    if (Model.CurrentPage == i)
+                                    {
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">@i<a href="/Blog/Index?Title=@Model.Title&Rate=@Model.Rate&currentPage=@i&sortOrder=@Model.sortOrder"></a></span>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="page-item"><a class="page-link" href="/Blog/Index?Title=@Model.Title&Rate=@Model.Rate&currentPage=@i&sortOrder=@Model.sortOrder">@i</a></li>
+                                    }
+
+                                }
+                                @if (Model.CurrentPage + 1 <= Model.TotalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="/Blog/Index?Title=@Model.Title&Rate=@Model.Rate&currentPage=@(Model.CurrentPage+1)&sortOrder=@Model.sortOrder">Next</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <span class="page-link">Next<a href="#"></a></span>
+                                    </li>
+                                }
+
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @section Scripts{
+        <script>
+      
+    const dropdownMenus = document.querySelectorAll('.dropdown-menu.option');
+
+    // Lặp qua từng dropdown-toggle và thêm sự kiện click
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle.option');
+     const dropdownItems = document.querySelectorAll('.dropdown-item.option');
+    dropdownToggles.forEach(function (toggle) {
+        toggle.addEventListener('click', function () {
+            // Tìm dropdown-menu-option tương ứng của dropdown-toggle được click
+            const dropdownMenu = toggle.nextElementSibling;
+            if (dropdownMenu.classList.contains('show')) {
+                dropdownMenu.classList.remove('show');
+            } else {
+                // Ẩn tất cả các dropdown-menu khác
+                dropdownMenus.forEach(function (menu) {
+                    if (menu !== dropdownMenu) {
+                        menu.classList.remove('show');
+                    }
+                });
+                dropdownMenu.classList.add('show');
+            }
+        });
+    });
+
+        </script>
+    }

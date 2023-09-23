@@ -1,0 +1,242 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DUTC.Models.DTO.Movie
+@{
+    ViewData["Title"] = "Movie Detail";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>DUTC</title>
+    <link rel="shortcut icon" type="image/png" href="https://dut.udn.vn/Files/admin/images/Tin_tuc/Khac/2020/LogoDUT/image002.jpg" />
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- bootstrap css -->
+    <link rel="stylesheet" href="~/css/styleProfile.css">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <!-- style css -->
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/styles.min.css" />
+    <!-- Responsive-->
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <!-- fevicon -->
+    <link rel="icon" href="images/fevicon.png" type="image/gif" />
+    <!-- Tweaks for older IEs-->
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <link rel="stylesheet" href="~/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="~/css/popVideo.css">
+    <link rel="stylesheet" href="~/css/clock.css" />
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <link rel="stylesheet" href="~/css/bootstrap-datepicker.min.css">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+</head>
+<!-- body -->
+
+<body class="main-layout">
+    <div class="full_bg">
+        <header class="header-area">
+            <div class="container">
+                <div class="row d_flex">
+                    <div class=" col-md-3 col-sm-3">
+                        <div class="logo">
+                            <a asp-action="Index" asp-controller="Home">DUTC</a>
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-sm-9">
+                        <div class="navbar-area">
+                            <nav class="site-navbar">
+                                <ul>
+                                    <li><a class="active" asp-action="Index" asp-controller="Home">Home</a></li>
+                                    <li>
+                                        <a href="#">Movie</a>
+                                        <ul>
+                                            <li><a asp-action="Index" asp-controller="Playing">Playing</a></li>
+                                            <li><a asp-action="Index" asp-controller="Upcoming">Upcoming</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="about.html">Category</a></li>
+                                    <li><a href="about.html">About</a></li>
+                                    <li><a href="service.html">Service</a></li>
+                                    <li><a href="blog.html">Blog</a></li>
+                                    <partial name="_LoginPartial" />
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="blog">
+            <div class="container-fluid">
+                <div class="container-fluid">
+                    <div class="popup-video">
+                        <span>&times;</span>
+                        <video src="/Uploads/@Model.VideoPosterMovie" muted autoplay controls onended="videoEnded()"> </video>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h5 class="card-title fw-semibold mb-4">Movie</h5>
+                                    <div class="card">
+                                        <img src="/Uploads/@Model.ImagePosterMovie" class="card-img-top" alt="...">
+                                        <div class="card-body">
+                                            <h5 class="card-title">@Model.Title</h5>
+                                            <a href="#" id="play-video-link" class="btn btn-primary">Watch Trailer</a>
+                                        </div>
+                                    </div>
+                                    <div class="datetime">
+                                        <div class="date">
+                                            <span id="dayname">Day</span>,
+                                            <span id="month">Month</span>
+                                            <span id="daynum">00</span>,
+                                            <span id="year">Year</span>
+                                        </div>
+                                        <div class="time">
+                                            <span id="hour">00</span>:
+                                            <span id="minutes">00</span>:
+                                            <span id="seconds">00</span>
+                                            <span id="period">AM</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <h5 class="card-title fw-semibold mb-4">Information</h5>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">@Model.Title</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">Time: <strong>@(Model.TimeWatch)ph</strong></h6>
+                                            <h6 class="card-subtitle mb-2 text-muted">Genre : <strong>@Model.GenreNames</strong></h6>
+                                            <p class="card-text">
+                                                Content : <strong>
+                                                    @Model.Content
+                                                </strong>
+                                            </p>
+                                            <!-- <a href="#" class="card-link">Card link</a>
+                                                <a href="#" class="card-link">Another link</a> -->
+                                            <h6 class="card-subtitle mb-2 text-muted">Date Released: <strong>@Model.DateReleased</strong></h6>
+                                            <p class="card-text">Cast : <strong>@Model.Cast</strong><br>Director: <strong>@Model.Director</strong><br>Nation: <strong>@Model.Nation</strong></p>
+                                            <!-- <button type="button" class="btn btn-warning m-1">Evaluate</button> -->
+                                            <h6 class="card-subtitle mb-2 text-muted">
+                                                Viewer: <strong>17000</strong><br>Rate:
+                                                <Strong>9</Strong>
+                                                <i class="fa fa-star"></i>
+                                            </h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <h5 class="card-title fw-semibold mb-4">Show Time</h5>
+                                        <div class="input-group">
+                                            <input type="date" class="form-control" placeholder="dd-mm-yyyy" value="" min="2023-01-01" max="2023-12-31">
+                                            <button type="button" class="btn btn-outline-primary">OK</button>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-header">
+                                            </div>
+                                            @if (Model.ListShowtimes != null)
+                                            {
+                                                var groupedObjects = Model.ListShowtimes.AsQueryable().GroupBy(a => a.Time.Date)
+                                                .Select(g => new
+                                                {
+                                                    Date = g.Key.ToString("dd/MM/yyyy"),
+                                                    Times = g.Select(dt => new { Time = dt.Time.TimeOfDay.ToString("hh\\:mm"), Id = dt.ID }).ToList()
+                                                });
+                                                @foreach (var group in groupedObjects)
+                                                {
+                                                    <h6 class="card-subtitle mb-2 text-muted"><strong>@group.Date</strong></h6>
+                                                    <ul style="display:flex;flex-wrap:wrap;">
+                                                        @foreach (var time in group.Times)
+                                                        {
+                                                            <li><a href="/Home/Room?id=@time.Id" value="@time.Id" class="btn btn-outline-dark m-1">@time.Time</a></li>
+                                                        }
+                                                    </ul>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelector('.popup-video').style.display = 'none';
+        document.querySelector('.popup-video span').onclick = () => {
+            document.querySelector('.popup-video').style.display = 'none';
+            document.querySelector('.popup-video video').pause();
+            document.querySelector('.popup-video video').currentTime = 0;
+        }
+        const playLink = document.getElementById('play-video-link');
+        playLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            document.querySelector('.popup-video').style.display = 'block';
+        });
+    </script>
+    <script>
+        function updateClock() {
+            var now = new Date();
+            var dname = now.getDay(),
+                mo = now.getMonth(),
+                dnum = now.getDate(),
+                yr = now.getFullYear(),
+                hou = now.getHours(),
+                min = now.getMinutes(),
+                sec = now.getSeconds(),
+                pe = "AM";
+            if (hou == 0) {
+                hou = 12;
+            }
+            if (hou > 12) {
+                hou -= 12;
+                pe = "PM";
+            }
+            Number.prototype.pad = function (digits) {
+                for (var n = this.toString(); n.length < digits; n = "0" + n);
+                return n;
+            }
+            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            var week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            var ids = ["dayname", "month", "daynum", "year", "hour", "minutes", "seconds", "period"];
+            var values = [week[dname], months[mo], dnum.pad(2), yr, hou.pad(2), min.pad(2), sec.pad(2), pe];
+
+            for (var i = 0; i < ids.length; i++) {
+                document.getElementById(ids[i]).firstChild.nodeValue = values[i];
+            }
+        }
+
+        function initClock() {
+            updateClock();
+            window.setInterval("updateClock()", 1);
+        }
+        initClock();
+    </script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.0.0.min.js"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script src="~/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/js/custom.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

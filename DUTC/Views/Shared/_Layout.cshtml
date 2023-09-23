@@ -1,0 +1,402 @@
+﻿@using DUTC.Data;
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>DUTC</title>
+    <link rel="shortcut icon" type="image/png" href="https://dut.udn.vn/Files/admin/images/Tin_tuc/Khac/2020/LogoDUT/image002.jpg" />
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- bootstrap css -->
+    <link rel="stylesheet" href="~/css/styleProfile.css">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <!-- style css -->
+    <link rel="stylesheet" href="~/css/style.css">
+    <!-- Responsive-->
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <!-- fevicon -->
+    <link rel="icon" href="images/fevicon.png" type="image/gif" />
+    <!-- Tweaks for older IEs-->
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <link rel="stylesheet" href="~/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="~/css/popVideo.css">
+    <link rel="stylesheet" href="~/css/clock.css" />
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <link rel="stylesheet" href="~/css/bootstrap-datepicker.min.css">
+    <script src="~/js/jquery.min.js"></script>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+</head>
+<!-- body -->
+
+<body class="main-layout">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Search the nearest showtime</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-movie">
+                        <div class="input-group mb-3">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Movie</button>
+                            <ul class="dropdown-menu" id="listMovie">
+                         @*dropdown by ajax movie list playing now*@
+                            </ul>
+                            <input type="text" class="form-control" id="dropdown-input" aria-label="Text input with dropdown button">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">DateTime Movie Playing</label>
+                            <input type="datetime-local" id="inputSearchDateShow" class="form-control rounded" placeholder="dd-mm-yyyy" value="" min="2023-01-01" max="2023-12-31">
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="btnSearchMovie" type="button" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="full_bg">
+        <header class="header-area">
+            <div class="container">
+                <div class="row d_flex">
+                    <div class=" col-md-3 col-sm-3">
+                        <div class="logo">
+                            <a asp-action="Index" asp-controller="Home">DUTC</a>
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-sm-9">
+                        <div class="navbar-area">
+                            <nav class="site-navbar">
+                                <ul>
+                                    <li><a class="active" asp-action="Index" asp-controller="Home">Home</a></li>
+                                    <li>
+                                        <a href="#">Movie</a>
+                                        <ul>
+                                            <li><a asp-action="Index" asp-controller="Playing">Playing</a></li>
+                                            <li><a asp-action="Index" asp-controller="Upcoming">Upcoming</a></li>
+                                        </ul>
+                                    </li>
+                                   @* <li><a href="about.html">Category</a></li>*@
+                                 @*   <li><a href="about.html">About</a></li>*@
+                                    <li><a asp-action="Service" asp-controller="Home">Service</a></li>
+                                    <li><a asp-action="Index" asp-controller="Blog">Blog</a></li>
+                                    <partial name="_LoginPartial" />
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+            @RenderSection("slider_main",required:false);
+    </div>
+        @RenderBody();
+    <footer>
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12">
+                                <div class="hedingh3 text_align_left">
+                                    <h3>About</h3>
+                                    <p> DUTC Cinema is a premier entertainment destination located in 58 Nguyen Luong Bang, Danang City. With state-of-the-art facilities and a wide range of services, it offers an unparalleled cinematic experience for movie enthusiasts.</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <div class="hedingh3 text_align_left">
+                                    <h3>Blog</h3>
+                                    <p>Our cinema always enhances the quality of service to answer the needs of our customers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12">
+                                <div class="hedingh3 text_align_left">  
+                                    <h3>Menu</h3>
+                                    <ul class="menu_footer">
+                                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                                        <li><a asp-action="Index" asp-controller="Playing">Movie Playing</a></li>
+                                        <li><a asp-action="Index" asp-controller="Upcoming">Movie Upcoming</a></li>
+                                        <li><a asp-action="Service" asp-controller="Home">Service</a></li>
+                                        <li><a asp-action="Index" asp-controller="Blog">Blog</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <div class="hedingh3  text_align_left">
+                                    <h3>New Review</h3>
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <form id="reviewService" class="form_subscri">
+                                            <input class="newsl" placeholder="Content" type="text" name="Review" id="inputReviewService">
+                                            <button class="subsci_btn" type="submit" id="addReviewService">Review Service</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <input class="newsl" placeholder="Please login to use" type="text" name="Review">
+                                        <a class="btn btn-outline-light btn-block" style="border-radius:7px;" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                    }
+                                    <ul class="top_infomation">
+                                        <li>
+                                            <i class="fa fa-phone" aria-hidden="true"></i> 0941295687
+                                        </li>
+                                        <li>
+                                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                                            <a href="Javascript:void(0)">DUTC@gmail.com</a>
+                                        </li>
+                                        <li>
+                                           <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                            <a href="Javascript:void(0)">8:00 - 23:00</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="follow text_align_center">
+                                <h3>Follow Us</h3>
+                                <ul class="social_icon ">
+                                    <li><a href="https://www.facebook.com/ctsvdhbkdhdn"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                    <li><a href="Javascript:void(0)"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                    <li><a href="Javascript:void(0)"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                                    <li><a href="Javascript:void(0)"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <p>© 2023 All Rights Reserved. Design by <a href="https://www.facebook.com/profile.php?id=100009058686438">Dang nguyen</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const dropdownButton = document.querySelector('.dropdown-toggle');
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+        const dropdownInput = document.querySelector('#dropdown-input');
+        dropdownButton.addEventListener('click', function () {
+            dropdownMenu.classList.toggle('show');
+        });
+
+        dropdownMenu.addEventListener('click', function (event) {
+            if (event.target.matches('.dropdown-item')) {
+                dropdownInput.value = event.target.textContent;
+                $('.form-group.showtime').remove();
+                dropdownMenu.classList.remove('show');
+            }
+        });
+        var btnSearchMovie = document.getElementById('btnSearchMovie');
+        btnSearchMovie.addEventListener("click", () => {
+            var title = $('#dropdown-input').val();
+            var date = $('#inputSearchDateShow').val();
+            // Lấy tất cả các phần tử có class="form-group ul" trong modal-movie
+            // Lặp qua từng phần tử và loại bỏ chúng
+            $('.form-group.showtime').remove();
+            console.log(title);
+            console.log(date);
+            if(Validate()){
+                $.ajax({
+                    url: '/Home/SearchMovie',
+                    type: 'GET',
+                    data: {
+                        term: title,
+                        date: date
+                    },
+                    success: function (res) {
+                        if (res.success) {
+                            $.each(res.data, function (index, item) {
+                                let tr = '<div class="form-group showtime"><h6 class="card-subtitle mb-2 text-muted"><strong>' + item.date + '</strong></h6>';
+                                tr += '<ul style="display:flex;flex-wrap:wrap;">';
+                                    $.each(item.time, function (index1, v) {
+                                        tr += '<li><a href="/Home/Room?id=' + v.item1 + ' "value=' + v.item1 + ' class="btn btn-outline-dark m-1">' + v.item2 + '</a></li>';
+                                    });
+                                tr += '</ul></div>';
+                                $('#modal-movie').append(tr);
+                            });
+
+                        }
+                        else{
+                            let tr = '<div class="form-group showtime">';
+                            tr += '<div class="alert alert-danger" role="alert">Can not find please choice another date or movie</div>';
+                            tr += '</div>';
+                            $('#modal-movie').append(tr);
+                        }
+                    }
+                });
+            }
+            else{
+                let tr = '<div class="form-group showtime">';
+                tr += '<div class="alert alert-warning" role="alert">Please Enter Title Movie Or DateTime</div>';
+                tr += '</div>';
+                $('#modal-movie').append(tr);
+            }
+            function Validate(){
+                if(title===""&&date==="") return false;
+                return true;
+            }
+        });
+    </script>
+    <script>
+        let buttons = document.querySelectorAll(".like-button");
+        buttons.forEach(function (button) {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                this.classList.toggle("active");
+                this.classList.add("animated");
+                generateClones(this);
+            });
+        });
+        function generateClones(button) {
+            let clones = randomInt(2, 4);
+            for (let it = 1; it <= clones; it++) {
+                let clone = button.querySelector("svg").cloneNode(true),
+                    size = randomInt(5, 16);
+                button.appendChild(clone);
+                clone.setAttribute("width", size);
+                clone.setAttribute("height", size);
+                clone.style.position = "absolute";
+                clone.style.transition =
+                    "transform 0.5s cubic-bezier(0.12, 0.74, 0.58, 0.99) 0.3s, opacity 1s ease-out .5s";
+                let animTimeout = setTimeout(function () {
+                    clearTimeout(animTimeout);
+                    clone.style.transform =
+                        "translate3d(" +
+                        (plusOrMinus() * randomInt(10, 25)) +
+                        "px," +
+                        (plusOrMinus() * randomInt(10, 25)) +
+                        "px,0)";
+                    clone.style.opacity = 0;
+                }, 1);
+                let removeNodeTimeout = setTimeout(function () {
+                    clone.parentNode.removeChild(clone);
+                    clearTimeout(removeNodeTimeout);
+                }, 900);
+                let removeClassTimeout = setTimeout(function () {
+                    button.classList.remove("animated")
+                }, 600);
+            }
+        }
+
+
+        function plusOrMinus() {
+            return Math.random() < 0.5 ? -1 : 1;
+        }
+
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+
+    </script>
+    <script>
+        document.querySelector('.popup-video').style.display = 'none';
+        document.querySelector('.popup-video span').onclick = () => {
+            document.querySelector('.popup-video').style.display = 'none';
+            document.querySelector('.popup-video video').pause();
+            document.querySelector('.popup-video video').currentTime = 0;
+        }
+        const playButtons = document.querySelectorAll('.play-btn');
+        playButtons.forEach(button => {
+            // Thực hiện các thao tác mong muốn với từng button
+            // Ví dụ:
+            button.addEventListener('click', () => {
+                document.querySelector('.popup-video').style.display = 'block';
+                const videoSrc = button.getAttribute('data-video-src');
+                changeVideoSource(videoSrc);
+            });
+            function changeVideoSource(newSrc) {
+                const videoElement = document.querySelector('.popup-video video');
+                videoElement.src = newSrc;
+                videoElement.load();
+                videoElement.play();
+            }
+        });
+    </script>
+    <script>
+        var exampleModal = document.getElementById('exampleModal')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            var recipient = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an AJAX request here
+            // and then do the updating in a callback.
+            //
+            // Update the modal's content.
+            var modalTitle = exampleModal.querySelector('.modal-title')
+            var modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+            modalTitle.textContent = 'New message to ' + recipient
+            modalBodyInput.value = recipient
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            LoadMovieList();
+        });
+        function LoadMovieList() {
+            $.ajax({
+                url: '/Home/GetListShowtimePlaying',
+                type: 'GET',
+                success: function (res) {
+                    if (res.success) {
+                        console.log(res);
+                        $.each(res.result.movieList, function (index, item) {
+                            var title = item.title; // Giả sử "item.Title" là nội dung bạn muốn chèn vào liên kết
+
+                            var listItem = $("<li>").append(
+                                $("<a>").addClass("dropdown-item").attr("href", "#").text(title)
+                            );
+
+                            $("#listMovie").append(listItem);
+
+                        });
+                    }
+                }
+            });
+        }
+        </script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.0.0.min.js"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script src="~/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/js/custom.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+@*<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)*@

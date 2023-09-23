@@ -1,0 +1,98 @@
+﻿@model DUTC.Models.DTO.Movie
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["title"] = "Add New Movie";
+}
+<div class="container-fluid">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold mb-4">@ViewData["title"]</h5>
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" asp-action="Add" asp-controller="Movie" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Title</label>
+                                <input type="text" class="form-control" asp-for="Title" />
+                                <div class="form-text">Enter Title Movie</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Content</label>
+                                <textarea type="text" class="form-control" asp-for="Content"></textarea>
+                                <div class="form-text">Enter Content Movie</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">List Genres</label>
+                                    <select asp-for="Genres" asp-items="@Model.GenreList" class="form-control" multiple>
+                                        <option value="">--select--</option>
+                                    </select>
+                                <div class="form-text">Choice Movie Genre</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Time watch</label>
+                                <input type="text" class="form-control" asp-for="TimeWatch" />
+                                <div class="form-text">Enter Time Movie Playing</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Cast</label>
+                                <input type="text" class="form-control" asp-for="Cast" />
+                                <div class="form-text">Enter Cast</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Director</label>
+                                <input type="text" class="form-control" asp-for="Director" />
+                                <div class="form-text">Enter Director</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Nation</label>
+                                <input type="text" class="form-control" asp-for="Nation" />
+                                <div class="form-text">Enter Nation</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Date Released</label>
+                                <input type="date" class="form-control" asp-for="DateReleased" />
+                                <div class="form-text">Enter Date movie start</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Date End</label>
+                                <input type="date" class="form-control" asp-for="DateEnd" />
+                                <div class="form-text">Enter Date movie end</div>
+                            </div>
+                            <div class="mb-3">
+                                <label  class="form-label">
+                                   Poster Movie</label>
+                                <input type="file" class="form-control" asp-for="Imagefile" />
+                                    <div class="form-text">Choice Poster Movie</div>
+                                <div class="form-text"><span asp-validation-for="Imagefile"></span></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Trailer Movie
+                                </label>
+                                <input type="file" name="VideoFile" class="form-control" asp-for="Videofile" />
+                                <div class="form-text"><span asp-validation-for="Videofile"></span></div>
+                                <div class="form-text">Choice Video Trailer Movie</div>
+                            </div>
+                            @if (TempData["msg"] != null)
+                            {
+                                @if (TempData["msg"].ToString().StartsWith("Error"))
+                                {
+                                    <div class="alert alert-danger" role="alert">
+                                        @TempData["msg"]
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-success" role="alert">
+                                        @TempData["msg"]
+                                    </div>
+                                }
+                            }
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,267 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DUTC.Models.DTO.Showtime
+@{
+    Layout = null;
+    ViewData["title"] = "Room";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DUTC</title>
+    <link rel="shortcut icon" type="image/png" href="https://dut.udn.vn/Files/admin/images/Tin_tuc/Khac/2020/LogoDUT/image002.jpg" />
+    <link rel="stylesheet" href="~/css/styleRoomMovie.css" />
+    <title>Movie Seat Booking</title>
+</head>
+
+<body>
+    <div class="room">
+        <div class="container">
+            <div class="screen">
+            </div>
+        </div>
+        @{
+            DateTime dateEnd = Model.Time.AddMinutes((int)Model.movie.TimeWatch);
+        }
+        <!-- movieDetail -->
+        <div class="booking-details">
+            <div class="poster-film">
+                <img src="/Uploads/@Model.movie.ImagePosterMovie">
+            </div>
+            <ul>
+                <li>
+                    <p class="text">Movie: <span>@Model.movie.Title</span></p>
+                </li>
+                <li>
+                    <p class="text">Room: <span>@Model.room.RoomID</span></p>
+                </li>
+                <li>
+                    <p class="text">Date: <span>@Model.Time.Date.ToString("dd/MM/yyyy")</span></p>
+                </li>
+                <li>
+                    <p class="text">Time: <span>@Model.Time.TimeOfDay.ToString("hh\\:mm") - @dateEnd.TimeOfDay.ToString("hh\\:mm")</span></p>
+                </li>
+                <li>
+                    <p class="text">Price of all Seats Select: <span id="total">0</span></p>
+                </li>
+            </ul>
+            <p class="text">You have selected: <span id="count"></span></p>
+            <div>
+                <ul class="showcase">
+                    <li>
+                        <div class="seat selected"></div>
+                        <small>Selected</small>
+                    </li>
+                    <li>
+                        <div class="seat sold"></div>
+                        <small>Sold</small>
+                    </li>
+                    <li>
+                        <div class="seat vip"></div>
+                        <small>Vip Seat</small>
+                    </li>
+                    <li>
+                        <div class="seat normal"></div>
+                        <small>Normal Seat</small>
+                    </li>
+                </ul>
+            </div>
+            <ul class="showcase">
+                <li><button type="button" onclick="buySeat()" class="btn btn-primary">Buy</button></li>
+                <li> <button type="button" onclick="window.location.href='/Home/MovieDetails?id=@Model.movie.Id'" class="btn btn-primary">Back</button></li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        var currentDate = new Date();
+        var dayNumber = currentDate.getDay();
+        var vipSeatMoney = 0;
+        var normalSeatMoney = 0;
+        var row = @Model.room.Row;
+        var column = @Model.room.Column;
+        addRowToContainer('.container', row, column);
+        hasbuySeat();
+        //function
+        const container = document.querySelector(".container");
+        const seats = document.querySelectorAll(".row .seat:not(.sold)");
+        const count = document.getElementById("count");
+        const total = document.getElementById("total");
+
+        // Update total and count
+        function updateSelectedCount() {
+            const selectedSeats = document.querySelectorAll(".row .seat.selected");
+            const selectedSeatsCount = selectedSeats.length;
+            const selectedSeatText = [...selectedSeats].map((seat) => seat.textContent);
+
+            count.innerText = selectedSeatText.join(", ");
+
+            let totalPrice = 0;
+            selectedSeats.forEach((seat) => {
+                if (seat.classList.contains("vip")) {
+                    totalPrice += vipSeatMoney;
+                } else {
+                    totalPrice += normalSeatMoney;
+                }
+            });
+
+            total.innerText = totalPrice;
+        }
+
+        populateUI();
+        // Get data from local storage and populate UI
+        function populateUI() {
+            const selectedSeats = JSON.parse(localStorage.getItem("selectedSeats"));
+
+            if (selectedSeats !== null && selectedSeats.length > 0) {
+                seats.forEach((seat, index) => {
+                    if (selectedSeats.indexOf(index) > -1) {
+                        if(!seat.classList.contains('sold'))
+                        seat.classList.add("selected");
+                    }
+                });
+            }
+        }
+        // Seat click event
+        container.addEventListener("click", (e) => {
+            if (e.target.classList.contains("seat") && !e.target.classList.contains("sold")) {
+                e.target.classList.toggle("selected");
+                updateSelectedCount();
+                saveSelectedSeats();
+            }
+        });
+         //Save selected seats to local storage
+        function saveSelectedSeats() {
+            const selectedSeats = document.querySelectorAll(".row .seat.selected");
+            const seatsIndex = [...selectedSeats].map((seat) => [...seats].indexOf(seat));
+            localStorage.setItem("selectedSeats", JSON.stringify(seatsIndex));
+        }
+
+        // Initial count and total set
+        updateSelectedCount();
+
+        function addRowToContainer(containerSelector, rows, cols) {
+            var seatsData = @Html.Raw(Json.Serialize(Model.seats));
+            for (const seat of seatsData) {
+                // Thực hiện các hành động với từng đối tượng seat trong mảng seatsData
+                console.log(seat); // Ví dụ: In ra từng đối tượng seat
+            }
+            const container = document.querySelector(containerSelector);
+            //add row to container
+            var k1=Math.ceil(rows/4);
+            var k2=Math.floor(3*rows/4);
+            for (let i = 0; i < rows; i++) {
+                const row = document.createElement('div');
+                row.classList.add('row');
+                for (let j = 0; j < cols; j++) {
+                    const seat = document.createElement('div');
+                    seat.classList.add('seat');
+                    const char = String.fromCharCode(i + 65);
+                    if (i >= 0 && i < k1) {
+                        seat.classList.toggle('normal');
+                    } else if (i > k2 && i < rows) {
+                        seat.classList.toggle('normal');
+                    } else {
+                        seat.classList.toggle('vip');
+                    }
+                    let idSeat;
+                    if (j < 9) {
+                        let num = (j + 1);
+                        let str = num.toString();
+                        idSeat = char + '0' + str;
+                        seat.textContent = idSeat;
+                    } else {
+                        let num = (j + 1);
+                        let str = num.toString();
+                        idSeat = char + str;
+                        seat.textContent = idSeat;
+                    }
+                    seat.classList.add(seatsData[i*cols+j].state);
+                    row.appendChild(seat);
+
+                }
+                container.appendChild(row);
+            }
+            if (dayNumber > 0 && dayNumber < 3) {
+                normalSeatMoney = 45000;
+            }
+            else if (dayNumber > 2 && dayNumber < 5) {
+                normalSeatMoney = 55000;
+            }
+            else {
+                normalSeatMoney = 65000;
+            }
+            vipSeatMoney = normalSeatMoney + 10000;
+        }
+        //for (let i = 0; i < ListSeat.length; i++) {
+        //    console.log(ListSeat[i].id);
+        //    // Truy cập các thuộc tính khác của Seat ở đây
+        //}
+
+        function buySeat() {
+            const confirmBuy = window.confirm("Are you sure you want to buy the selected seats?");
+            const selectedSeats = document.querySelectorAll(".row .seat.selected");//get list selected seat
+            let seatID = [];
+            for(const seat of selectedSeats){
+                seatID.push(seat.textContent);
+            }
+            if (confirmBuy) {
+                var idShowtime = @Model.ID;
+                var obj = {
+                    ID: idShowtime,
+                    SeatBuy: seatID
+                };
+                //selectedSeats.forEach((seat) => {
+                //    seat.classList.replace('selected', 'sold');
+                //    seatID.push(seat.textContent);
+                //});
+                console.log('List SeatID choice:' + seatID);
+                $.ajax({
+                    url: '/Payment/Index',
+                    type: 'POST',
+                    data: obj,  // Chỉnh sửa để truyền dữ liệu theo định dạng key-value
+                    success: function (res) {
+                        if (res.success) {
+                          
+                            var idShowtime = @Model.ID;
+                            var seatIDs = seatID.join(',');
+                            var encodedSeatIDs = btoa(seatIDs); // Mã hóa chuỗi seatIDs thành Base64
+                            var totals=btoa(total.innerText);
+                            var url = '/Payment/PaymentForm?id=' + idShowtime + '&SeatIDs=' + encodedSeatIDs + '&total=' + totals;
+                            window.location.href = url;
+                        }
+                        else {
+                           alert("Error Buy");
+                        }
+                    }
+                });
+            }
+        }
+        function hasbuySeat() {
+            const selectedSeats = document.querySelectorAll(".row .seat");
+            selectedSeats.forEach((seat) => {
+                if (seat.classList.contains('1'))
+                    seat.classList.replace('1','sold');
+                else {
+                    seat.classList.remove('0');
+                }
+            });
+        }
+    </script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.0.0.min.js"></script>
+    <script src="~/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/sidebarmenu.js"></script>
+    <script src="~/js/app.min.js"></script>
+    <script src="~/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="~/libs/simplebar/dist/simplebar.js"></script>
+    <script src="~/js/dashboard.js"></script>
+</body>
+
+</html>

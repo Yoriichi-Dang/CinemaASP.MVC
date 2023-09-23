@@ -1,0 +1,165 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DUTC.Models.DTO.TicketList
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["title"] = "Ticket List";
+}
+<div class="container-fluid">
+<!--  Row 1 -->
+<div class="row">
+    <div class="col-lg-12 d-flex align-items-stretch">
+        <div class="card w-100">
+            <div class="card-body p-4">
+                <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
+                    <div class="mb-3 mb-sm-0">
+                        <h5 class="card-title fw-semibold">@ViewData["title"]</h5>
+                    </div>
+                    <div>
+                       @* <select class="form-select">
+                            <option value="1">All</option>
+                            <option value="2">Playing</option>
+                            <option value="3">Upcoming</option>
+                        </select>*@
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table text-nowrap mb-0 align-middle">
+                        <thead class="text-dark fs-4">
+                            <tr>
+                                <th class="border-bottom-0">
+                                    <h6 class="fw-semibold mb-0">ID</h6>
+                                </th>
+                                <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0"><a href="/ManageTicket/Index?term=@Model.Term&sortOrder=@ViewData["timeOrder"]&currentPage=@Model.CurrentPage" style="color:black;">Date Time</a></h6>
+                                </th>
+                                 <th class="border-bottom-0">
+                                       <h6 class="fw-semibold mb-0">Phone</h6>
+                                 </th>
+                                <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0"><a href="/ManageTicket/Index?term=@Model.Term&sortOrder=@ViewData["NameOrder"]&currentPage=@Model.CurrentPage" style="color:black;">Movie</a></h6>
+                                </th>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0">Showtime</h6>
+                                    </th>
+                                    <th class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0"><a href="/ManageTicket/Index?term=@Model.Term&sortOrder=@ViewData["MoneyOrder"]&currentPage=@Model.CurrentPage" style="color:black;">Total</a></h6>
+                                    </th>
+                                <th class="border-bottom-0">
+                                    <h6 class="fw-semibold mb-0">Action</h6>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var group in Model.List.ToList())
+                            {
+                                    DateTime date = (DateTime)group.ticket.DateTime;
+                                    string datestr = date.Date.ToString("dd/MM/yyyy");
+                                    string timestr = date.TimeOfDay.ToString("hh\\:mm");
+                                    datestr += (" " + timestr);
+                                    DateTime showtime = (DateTime)group.TimeShowtime;
+                                    string showtimestr = showtime.Date.ToString("dd/MM/yyyy");
+                                    showtimestr += ("-" + showtime.TimeOfDay.ToString("hh\\:mm"));
+                                    int money = (int)group.ticket.Total;
+                                    string totalMoneyStr = money.ToString("N0");
+                                    <tr>
+                                    <td class="border-bottom-0">
+                                          <h6 class="fw-semibold mb-0 fs-4"><a href="/ManageTicket/ViewBill?id=@group.ticket.Id" style="color:black;">@group.ticket.Id</a></h6>
+                                    </td>
+                                    <td class="border-bottom-0">
+                                            <p class="mb-0 fw-normal">@datestr</p>
+                                    </td>
+                                    <td class="border-bottom-0">
+                                            <h6 class="fw-semibold mb-0 fs-4"><a href="/ManageAccount/ViewProfile?id=@group.ticket.UserID" style="color:black;">@group.ticket.UserInfo</a></h6>
+                                    </td>
+                                        <td class="border-bottom-0">
+                                            <h6 class="fw-semibold mb-0 fs-4"><a href="/Home/MovieDetails?id=@group.MovieId" style="color:black;">@group.Title</a></h6>
+                                        </td>
+                                        <td class="border-bottom-0">
+                                            <p class="mb-0 fw-normal">@showtimestr</p>
+                                        </td>
+                                    <td class="border-bottom-0">
+                                        <h6 class="fw-semibold mb-0 fs-4">@totalMoneyStr</h6>
+                                    </td>
+                                    <td class="border-bottom-0">
+                                        <a class="btn btn-primary m-1" href="/Movie/MovieDetail?id=@group.MovieId">View</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <nav aria-label="...">
+                            <ul class="pagination justify-content-end">
+                            @if (Model.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="/ManageTicket/Index?currentPage=@(Model.CurrentPage-1)&term=@Model.Term&sortOrder=@Model.sortOrder">Previous</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                        <span class="page-link">Previous<a href="/ManageTicket/Index?currentPage=@(Model.CurrentPage-1)&term=@Model.Term&sortOrder=@Model.sortOrder"></a></span>
+                                </li>
+                            }
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                if (Model.CurrentPage == i)
+                                {
+                                    <li class="page-item active" aria-current="page">
+                                            <span class="page-link">@i<a href="/ManageTicket/Index?currentPage=@i&term=@Model.Term&sortOrder=@Model.sortOrder"></a></span>
+                                    </li>
+                                }
+                                else
+                                {
+                                        <li class="page-item"><a class="page-link" href="/ManageTicket/Index?currentPage=@i&term=@Model.Term&sortOrder=@Model.sortOrder">@i</a></li>
+                                }
+
+                            }
+                            @if (Model.CurrentPage + 1 <= Model.TotalPages)
+                            {
+                                <li class="page-item">
+                                        <a class="page-link" href="/ManageTicket/Index?currentPage=@(Model.CurrentPage+1)&term=@Model.Term&sortOrder=@Model.sortOrder">Next</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    <span class="page-link">Next<a href="#"></a></span>
+                                </li>
+                            }
+
+                        </ul>
+                    </nav>
+                    @if (TempData["msg"] != null)
+                    {
+                        @if (TempData["msg"].ToString().StartsWith("Error"))
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                @TempData["msg"]
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-success" role="alert">
+                                @TempData["msg"]
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+@section SearchTicket{
+    <form asp-controller="ManageTicket" asp-action="Index">
+        <div class="input-group">
+            <input name="term" type="search" class="form-control rounded" placeholder="Search..." aria-label="Search" aria-describedby="search-addon" />
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </div>
+    </form>
+    }
+
+

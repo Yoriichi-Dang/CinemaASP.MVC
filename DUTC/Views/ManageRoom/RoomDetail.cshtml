@@ -1,0 +1,212 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DUTC.Models.DTO.Room
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>DUTC</title>
+    <link rel="shortcut icon" type="image/png" href="https://dut.udn.vn/Files/admin/images/Tin_tuc/Khac/2020/LogoDUT/image002.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/styleRoom.css" />
+    <title>Movie Seat Booking</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="screen">
+        </div>
+    </div>
+
+    <p class="text">
+        You have selected: <span id="count"></span> <br>Price of all Seats : <span id="total">0</span>
+    </p>
+    <ul class="showcase">
+        <li>
+            <div class="seat selected"></div>
+            <small>Selected</small>
+        </li>
+        <li>
+            <div class="seat sold"></div>
+            <small>Sold</small>
+        </li>
+        <li>
+            <div class="seat vip"></div>
+            <small>Vip Seat</small>
+        </li>
+        <li>
+            <div class="seat normal"></div>
+            <small>Normal Seat</small>
+        </li>
+    </ul>
+    <ul class="showcase">
+        <li>  <button type="button" onclick="buySeat()" class="btn btn-primary">Buy</button></li>
+        <li>  <button type="button" onclick="ResetSeat()" class="btn btn-primary">Reset</button></li>
+        <li> <button type="button" onclick="window.location.href='/ManageRoom/Index'" class="btn btn-primary">Back</button></li>
+    </ul>
+ 
+    <script>
+         var row = @Model.Row;
+         var column = @Model.Column;
+        addRowToContainer('.container', row, column);
+        //function
+        const container = document.querySelector(".container");
+        const seats = document.querySelectorAll(".row .seat:not(.sold)");
+        const count = document.getElementById("count");
+        const total = document.getElementById("total");
+
+        populateUI();
+
+        const vipSeatMoney = 70000;
+        const normalSeatMoney = 50000;
+
+        // Update total and count
+        function updateSelectedCount() {
+            const selectedSeats = document.querySelectorAll(".row .seat.selected");
+            const selectedSeatsCount = selectedSeats.length;
+            const selectedSeatText = [...selectedSeats].map((seat) => seat.textContent);
+
+            count.innerText = selectedSeatText.join(", ");
+
+            let totalPrice = 0;
+            selectedSeats.forEach((seat) => {
+                if (seat.classList.contains("vip")) {
+                    totalPrice += vipSeatMoney;
+                } else {
+                    totalPrice += normalSeatMoney; 
+                }
+            });
+
+            total.innerText = totalPrice;
+        }
+
+        // Get data from local storage and populate UI
+        function populateUI() {
+            const selectedSeats = JSON.parse(localStorage.getItem("selectedSeats"));
+
+            if (selectedSeats !== null && selectedSeats.length > 0) {
+                seats.forEach((seat, index) => {
+                    if (selectedSeats.indexOf(index) > -1) {
+                        seat.classList.add("selected");
+                    }
+                });
+            }
+        }
+
+        // Seat click event
+        container.addEventListener("click", (e) => {
+            if (e.target.classList.contains("seat") && !e.target.classList.contains("sold")) {
+                e.target.classList.toggle("selected");
+                updateSelectedCount();
+                saveSelectedSeats();
+            }
+        });
+
+        // Save selected seats to local storage
+        function saveSelectedSeats() {
+            const selectedSeats = document.querySelectorAll(".row .seat.selected");
+            const seatsIndex = [...selectedSeats].map((seat) => [...seats].indexOf(seat));
+            localStorage.setItem("selectedSeats", JSON.stringify(seatsIndex));
+        }
+
+        // Initial count and total set
+        updateSelectedCount();
+      
+        function addRowToContainer(containerSelector, rows, cols) {
+
+            const container = document.querySelector(containerSelector);
+            //add row to container
+            for (let i = 0; i < rows; i++) {
+                const row = document.createElement('div');
+                row.classList.add('row');
+                for (let j = 0; j < cols; j++) {
+                    const seat = document.createElement('div');
+                    seat.classList.add('seat');
+                    const char = String.fromCharCode(i + 65);
+                    if (i >= 0 && i < Math.round(rows / 4)) {
+                        seat.classList.toggle('normal');
+                        console.log(rows / 4);
+                    } else if (i > Math.floor(3 * rows / 4) && i < rows) {
+                        seat.classList.toggle('normal');
+                    } else {
+                        seat.classList.toggle('vip');
+                    }
+                    let idSeat;
+                    if (j < 9) {
+                        let num = (j + 1);
+                        let str = num.toString();
+                        idSeat = char + '0' + str;
+                        seat.textContent = idSeat;
+                    } else {
+                        let num = (j + 1);
+                        let str = num.toString();
+                        idSeat = char + str;
+                        seat.textContent = idSeat;
+                    }
+                    row.appendChild(seat);
+
+                }
+                container.appendChild(row);
+            }
+        }
+        //for (let i = 0; i < ListSeat.length; i++) {
+        //    console.log(ListSeat[i].id);
+        //    // Truy cập các thuộc tính khác của Seat ở đây
+        //}
+
+
+        function buySeat() {
+            const confirmBuy = window.confirm("Are you sure you want to buy the selected seats?");
+            const selectedSeats = document.querySelectorAll(".row .seat.selected");//get list selected seat
+            let seatID=[];
+            var RoomID=@Model.RoomID;
+            if(confirmBuy){
+                selectedSeats.forEach((seat) => {
+                    seat.classList.replace('selected', 'sold');
+                    seatID.push(seat.textContent);
+                });
+                console.log("Room: "+RoomID);
+                console.log('List SeatID choice:'+seatID);
+            }
+        }
+        ResetSeat();
+
+        function ResetSeat() {
+            const selectedSeats = document.querySelectorAll(".row .seat.sold");
+            selectedSeats.forEach((seat) => {
+                seat.classList.remove('sold');
+            });
+        }
+        hasbuySeat();
+
+        function hasbuySeat() {
+            const selectedSeats = document.querySelectorAll(".row .seat");
+
+            selectedSeats.forEach((seat) => {
+                if (seat.classList.contains('1'))
+                    seat.classList.add('sold');
+                else {
+                    seat.classList.remove('0');
+                }
+            });
+        }
+    </script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.0.0.min.js"></script>
+    <script src="~/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/sidebarmenu.js"></script>
+    <script src="~/js/app.min.js"></script>
+    <script src="~/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="~/libs/simplebar/dist/simplebar.js"></script>
+    <script src="~/js/dashboard.js"></script>
+</body>
+</html>
+   
